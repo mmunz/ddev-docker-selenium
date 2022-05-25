@@ -1,0 +1,58 @@
+version: '3.6'
+services:
+  hub:
+    image: seleniarm/hub:4.1.4-20220429
+    container_name: ddev-${DDEV_SITENAME}-hub
+    labels :
+      com.ddev.site-name : ${DDEV_SITENAME}
+      com.ddev.approot : ${DDEV_APPROOT}
+
+  chrome:
+    # no chrome image in seleniarm repos yet, so use chromium
+    image: seleniarm/node-chromium:4.1.4-20220429
+    container_name: ddev-${DDEV_SITENAME}-chrome
+    hostname: ${DDEV_SITENAME}-chrome
+    shm_size: 2gb
+    expose:
+      - "7900"
+    volumes:
+      - /dev/shm:/dev/shm
+    depends_on:
+      - hub
+    environment:
+      - SE_EVENT_BUS_HOST=hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - HUB_PORT=4444
+      - VIRTUAL_HOST=${DDEV_HOSTNAME}
+      - HTTP_EXPOSE=7900:7900
+      - VNC_NO_PASSWORD=1
+    labels:
+      com.ddev.site-name: ${DDEV_SITENAME}
+      com.ddev.approot: ${DDEV_APPROOT}
+
+  firefox:
+    image: seleniarm/node-firefox:4.1.4-20220429
+    container_name: ddev-${DDEV_SITENAME}-firefox
+    hostname: ${DDEV_SITENAME}-firefox
+    shm_size: 2gb
+    expose:
+      # need to change port here, because there is a bug with exposing the same port multiple times, see:
+      # https://github.com/drud/ddev/issues/3658
+      - "7901"
+    volumes:
+      - /dev/shm:/dev/shm
+    depends_on:
+      - hub
+    environment:
+      - SE_EVENT_BUS_HOST=hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - HUB_PORT=4444
+      - VIRTUAL_HOST=${DDEV_HOSTNAME}
+      - HTTP_EXPOSE=7901:7901
+      - VNC_NO_PASSWORD=1
+      - NO_VNC_PORT=7901
+    labels:
+      com.ddev.site-name: ${DDEV_SITENAME}
+      com.ddev.approot: ${DDEV_APPROOT}
