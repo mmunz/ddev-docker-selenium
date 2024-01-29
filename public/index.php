@@ -8,8 +8,8 @@ function printInfo()
 
     echo "<h2>Access browsers</h2>";
     $url = getenv("DDEV_PRIMARY_URL");
-    $url_chrome  = str_replace('https', 'http', $url) . ':7900';
-    $url_firefox  = str_replace('https', 'http', $url) . ':7901';
+    $url_chrome  = $url . ':7900';
+    $url_firefox  = $url . ':7901';
     echo("<ul>");
     echo('<li><strong>Chrome</strong> web vnc: <a href="' . $url_chrome . '">' . $url_chrome . '</a></li>');
     echo('<li><strong>Firefox</strong> web vnc: <a href="' . $url_firefox . '">' . $url_firefox . '</a></li>');
