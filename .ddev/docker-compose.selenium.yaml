@@ -1,4 +1,3 @@
-version: '3.6'
 services:
   hub:
     image: seleniarm/hub:latest
